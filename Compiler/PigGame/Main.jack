@@ -1,0 +1,12 @@
+class Main {
+	// the main method to start the game
+	function void main() {
+		var PigGame game;
+
+		let game = PigGame.new();
+
+		do game.run();
+		do game.dispose();
+		return;
+	}
+}

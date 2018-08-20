@@ -1,0 +1,150 @@
+class PigGame {
+	field int playerTotal;
+	field int computerTotal;
+	field int playerTurn;
+	field boolean gameOver;
+
+	// the constructor for a new game
+	constructor PigGame new() {
+		let playerTotal = 0;
+		let computerTotal = 0;
+		let playerTurn = 0;
+		let gameOver = false;
+		do LCGRandom.setSeed(357); 
+		do Output.printString("New Pig Game");
+		do Output.println();
+		do Output.printString("Press Space to roll the dice.");
+		do Output.println();
+
+		return this;
+	}
+
+	// the method to roll the dice
+	method void roll() {
+		var int rollNumber;
+		let rollNumber = LCGRandom.randRange(1,6);
+		do Output.printString("Player rolled ");
+		do Output.printInt(rollNumber);
+		do Output.println();
+		if (~(rollNumber = 1)) {
+			let playerTurn = playerTurn + rollNumber;
+			do Output.printString("Press Space to roll the dice or Enter to hold.");
+			do Output.println(); 
+		}
+		else {
+			let playerTurn = 0;
+			do computerRoll();
+		}
+		return;
+	}
+
+	// the method to hold and collect the points
+	method void hold() {
+		let playerTotal = playerTotal + playerTurn;
+		if (playerTotal > 99) {
+			let gameOver = true;
+			do Output.printString("Player wins!");
+			do Output.println();
+		}
+		else {
+			let playerTurn = 0;
+			do computerRoll();
+		}
+		
+		return;
+	}
+
+	// the method for the computer to play
+	method void computerRoll() {
+		var int computerTurn;
+		var int timesTotal;
+		var int time;
+		var boolean break;
+		var int rollCom;
+		let computerTurn = 0;
+		let timesTotal = LCGRandom.randRange(1,6);
+		let time = 0;
+		let break = false;
+		do cleanScreen();
+		while ((time < timesTotal) & (~break)) {
+			let rollCom = LCGRandom.randRange(1,6);
+			do Output.printString("Computer rolled ");
+			do Output.printInt(rollCom);
+			do Output.println();
+
+			if (rollCom = 1) {
+				let computerTurn = 0;
+				let break = true;
+			}
+			else {
+				let computerTurn = computerTurn + rollCom;
+				let time = time + 1;
+			}
+		}
+		let computerTotal = computerTotal + computerTurn;
+		let computerTurn = 0;
+		do Output.printString("Computer Total Score: ");
+		do Output.printInt(computerTotal);
+		do Output.println();
+
+		if (computerTotal > 99) {
+			let gameOver = true;
+			do Output.printString("Computer wins!");
+			do Output.println();
+		}
+		else {
+			do Output.printString("Press Space to roll the dice.");
+			do Output.println();
+		}
+		return;
+	}
+
+	// deallocate the memory
+	method void dispose() {
+		do Memory.deAlloc(this);
+		return;
+	}
+
+	// the method to clean the screen
+	method void cleanScreen() {
+		do Output.moveCursor(0,0);
+		do Screen.clearScreen();
+		do Output.printString("Player Total Score: ");
+		do Output.printInt(playerTotal);
+		do Output.println();
+		do Output.printString("Computer Total Score: ");
+		do Output.printInt(computerTotal);
+		do Output.println();
+		return;
+	}
+
+	// the method to start the game and get user input
+	method void run() {
+		var char key;
+		var boolean exit;
+
+		let exit = false;
+
+		while (~gameOver & ~exit) {
+			
+			while (key = 0) {
+				let key = Keyboard.keyPressed();
+			}
+			if (key = 140) {
+				let exit = true;
+			}
+			if (key = 32) {
+				do roll();
+			}
+			if (key = 128) {
+				do cleanScreen();
+				do hold();
+			}
+			while (~(key = 0)) {
+				let key = Keyboard.keyPressed();
+			}
+		}
+		
+		return;
+	}
+}
